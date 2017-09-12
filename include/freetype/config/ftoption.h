@@ -311,7 +311,28 @@ FT_BEGIN_HEADER
   /*                                                                       */
 /* #define FT_EXPORT(x)      extern x */
 /* #define FT_EXPORT_DEF(x)  x */
+# define __DLL_IMPORT__  __declspec(dllimport)
+# define __DLL_EXPORT__  __declspec(dllexport)
 
+#if (defined __WIN32__) || (defined _WIN32)
+# ifdef BUILD_FREETYPE2_DLL
+#  define FREETYPE2_DLL_IMPEXP     __DLL_EXPORT__
+# elif defined(FREETYPE2_STATIC)
+#  define FREETYPE2_DLL_IMPEXP      
+# elif defined (USE_FREETYPE2_DLL)
+#  define FREETYPE2_DLL_IMPEXP     __DLL_IMPORT__
+# elif defined (USE_FREETYPE2_STATIC)
+#  define FREETYPE2_DLL_IMPEXP      
+# else /* assume USE_FREETYPE2_DLL */
+#  define FREETYPE2_DLL_IMPEXP     __DLL_IMPORT__
+# endif
+#else /* __WIN32__ */
+# define FREETYPE2_DLL_IMPEXP  
+#endif
+ 
+#define FT_EXPORT(x)    FREETYPE2_DLL_IMPEXP x
+#define FT_BASE(x)      FREETYPE2_DLL_IMPEXP x
+#define FT_EXPORT_DEF(x)  FREETYPE2_DLL_IMPEXP x
 
   /*************************************************************************/
   /*                                                                       */
